@@ -7,8 +7,6 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
-#include <thread>
-
 #pragma comment(lib, "Ws2_32.lib")
 
 Server::Server()
@@ -51,23 +49,7 @@ void Server::startServer()
 
 		if (result != 0)
 		{
-			std::thread thr(&Server::sendRequest, this, client_socket);
-			if (thr.joinable())
-				thr.join();
+			
 		}
 	}
-}
-
-void Server::sendRequest(int client_socket)
-{
-	std::lock_guard<std::mutex> lock(m_mutex);
-	std::stringstream response;
-	response << "Hello world";
-	std::cout << "request received" << std::endl;
-	int result = send(client_socket, response.str().c_str(), response.str().length(), 0);
-	if (result != SOCKET_ERROR)
-	{
-		std::cout << "responce send" << std::endl;
-	}
-	closesocket(client_socket);
 }
